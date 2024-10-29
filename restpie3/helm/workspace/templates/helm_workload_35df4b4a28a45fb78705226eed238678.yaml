@@ -24,8 +24,10 @@ spec:
       {{- if .Values.helm_workload_35df4b4a28a45fb78705226eed238678.service_account }}
       serviceAccountName: {{ .Values.helm_workload_35df4b4a28a45fb78705226eed238678.service_account }}
       {{- end }}
+      {{- if .Values.helm_workload_35df4b4a28a45fb78705226eed238678.image_pull_secret }}
       imagePullSecrets:
         - name: {{ .Values.helm_workload_35df4b4a28a45fb78705226eed238678.image_pull_secret }}
+      {{- end }}
       volumes:
         {{- range .Values.helm_workload_35df4b4a28a45fb78705226eed238678.volumes }}
         - name: {{ .name }}
@@ -45,13 +47,6 @@ spec:
             - name: http
               containerPort: {{ .Values.helm_workload_35df4b4a28a45fb78705226eed238678.port }}
               protocol: {{ .Values.helm_workload_35df4b4a28a45fb78705226eed238678.protocol }}
-          env:
-          {{- with .Values.helm_workload_35df4b4a28a45fb78705226eed238678.env }}
-            {{ range $key, $value := . }}
-            - name: {{ $key }}
-              value: {{ $value | quote }}
-            {{ end }}
-          {{- end }}
           envFrom:
             {{- range .Values.helm_workload_35df4b4a28a45fb78705226eed238678.env_from_secret }}
             - secretRef:
@@ -68,3 +63,10 @@ spec:
               subPath: {{ .subPath }}
               readOnly: {{ .readOnly }}
             {{- end }}
+          env:
+          {{- with .Values.helm_workload_35df4b4a28a45fb78705226eed238678.env }}
+            {{- range $key, $value := . }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
+          {{- end }}
